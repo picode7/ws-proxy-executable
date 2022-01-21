@@ -2,8 +2,12 @@
 
 ## Usage
 
-- `npm i`, `npm run build`
-- run the executable in "dist/" from command line with remote address as first argument `host:port` or input it when prompted when running the executable
+- run the executable from command line with remote address as first argument `host:port` or input it when prompted when running the executable
+
+## Develop
+
+- `npm i`
+- `npm run build`
 
 ## Developer: Global usage of PKG
 
