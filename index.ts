@@ -1,17 +1,10 @@
 import * as http from 'http'
 import { createProxyServer } from 'http-proxy'
-import * as rl from 'readline'
-
-let host = ''
-let port = 0
+import * as readline from 'readline'
 
 const arg = process.argv[2]
-
 if (arg === undefined) {
-  const rlInterface = rl.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  })
+  const rlInterface = readline.createInterface({ input: process.stdin, output: process.stdout })
   rlInterface.question(`Please enter the remote address "host:port"\n`, (arg) => {
     start(arg)
   })
@@ -21,28 +14,27 @@ if (arg === undefined) {
 
 function start(arg: string) {
   const split = arg.split(':')
-  host = split[0]
-  port = parseInt(split[1])
+  const remoteHost = split[0]
+  const remotePort = parseInt(split[1])
 
   const localPort = 8087
-  const s = http.createServer()
-  s.listen(localPort)
+  const server = http.createServer()
+  server.listen(localPort)
 
-  console.log(`Opened proxy on localhost:${localPort} to ${host}:${port}`)
+  console.log(`Opened proxy on localhost:${localPort} to ${remoteHost}:${remotePort}`)
 
   const proxy = createProxyServer({
-    target: {
-      host,
-      port,
-      protocol: 'ws',
-    },
+    target: { host: remoteHost, port: remotePort },
   })
 
-  s.on('request', function (request, response) {
+  server.on('request', function (request, response) {
+    console.log(`client request ${request.url || ''}`)
     proxy.web(request, response)
   })
 
-  s.on('upgrade', function (req, socket, head) {
+  server.on('upgrade', function (req, socket, head) {
+    console.log(`client upgrading`)
+    socket.on('close', () => console.log(`client lost`))
     proxy.ws(req, socket, head)
   })
 }
