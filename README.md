@@ -2,6 +2,7 @@
 
 ## Usage
 
+- download executable from https://github.com/picode7/ws-proxy-executable/releases/ or build it
 - run the executable from command line with remote address as first argument `host:port` or input it when prompted when running the executable
 
 ## Develop
